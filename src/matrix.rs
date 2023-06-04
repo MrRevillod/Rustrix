@@ -1,5 +1,5 @@
 
-struct Matrix {
+pub struct Matrix {
     array: Vec<Vec<f64>>,
     det: Option<f64>,
     rank: Option<usize>,
@@ -8,7 +8,7 @@ struct Matrix {
 
 impl Matrix {
 
-    fn new(array: Vec<Vec<f64>>) -> Matrix {
+    pub fn new(array: Vec<Vec<f64>>) -> Matrix {
 
         let shape = (array.len(), array[0].len());
         Matrix {
@@ -19,15 +19,20 @@ impl Matrix {
         }
     }
 
-    fn show(&self) {
+    pub fn show(&self) {
         println!();
         for row in &self.array {
-            println!("  [{}]", row.iter().map(|&e| e.to_string()).collect::<Vec<String>>().join(" "));
+            println!("  [{}]",
+                     row.iter()
+                     .map(|&e| e.to_string())
+                     .collect::<Vec<String>>()
+                     .join(" ")
+            );
         }
         println!();
     }
 
-    fn get_det(&mut self) -> f64 {
+    pub fn get_det(&mut self) -> f64 {
 
         if let Some(det) = self.det {
             return det;
@@ -38,7 +43,8 @@ impl Matrix {
         return det
     }
 
-    fn calculate_det(&mut self) -> f64 {
+
+    pub fn calculate_det(&self) -> f64 {
 
         let n = self.shape.0;
         let mut det = 1.0;
@@ -92,9 +98,27 @@ impl Matrix {
         }
 
         det = (det * 100.0).round() / 100.0;
-        self.det = Some(det);
-
         return det
+    }
+
+    pub fn get_rank(&mut self) -> usize {
+
+        if let Some(rank) = self.rank {
+            return rank;
+        }
+
+        let rank = self.calculate_rank();
+        self.rank = Some(rank);
+        return rank
+    }
+
+    pub fn calculate_rank(&self) -> usize {
+
+        let m = self.shape.0;
+        let n = self.shape.1;
+
+        let mut rank = m.min(n);
+        let mut array = self.array.clone();
     }
 }
 
