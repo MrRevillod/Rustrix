@@ -1,3 +1,3 @@
 ## Matrix calculator using Rust
 
-![image](../image.png)
+![image](https://raw.githubusercontent.com/MrRevillod/Rustrix/main/image.png)
