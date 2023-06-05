@@ -32,6 +32,15 @@ impl Matrix {
         println!();
     }
 
+    pub fn is_valid(&self, other: &Matrix, op: &str) -> bool {
+
+        match op {
+            "+" | "-" => self.shape == other.shape,
+            "x" => self.shape.1 == other.shape.0,
+            _ => false,
+        }
+    }
+
     pub fn get_det(&mut self) -> f64 {
 
         if let Some(det) = self.det {
@@ -48,18 +57,14 @@ impl Matrix {
 
         let n = self.shape.0;
         let mut det = 1.0;
-
         let mut array = self.array.clone();
 
         for i in 0..n {
 
-            // Si el pivote es 0, intercambiar filas
-            // por lo tanto segun esa trans elemental
-            // se debe cambiar el signo del det
-
             let mut pivot = array[i][i];
 
             if pivot == 0.0 {
+
                 for j in (i + 1)..n {
                     if array[j][i] != 0.0 {
                         array.swap(i, j);
@@ -68,21 +73,12 @@ impl Matrix {
                     }
                 }
 
-                // Si todas las filas debajo del pivote son nulas
-                // el determinante es 0
-                // Se asume esto ya que no hay transformacion que cambie el pivot
-
                 if array[i][i] == 0.0 {
                     return 0.0;
                 }
 
                 pivot = array[i][i];
             }
-
-            // Eliminar elementos por debajo del pivote
-            // En este paso se aplican tranformaciones del 3er
-            // tipo o sea no alteran el determinante
-
 
             for j in (i + 1)..n {
                 let factor = array[j][i] / pivot;
@@ -91,9 +87,6 @@ impl Matrix {
                 }
             }
 
-            // Se multiplica el determinante actual por el pivote
-            // presente en la diagonal principal
-
             det *= pivot;
         }
 
@@ -101,29 +94,29 @@ impl Matrix {
         return det
     }
 
-    pub fn get_rank(&mut self) -> usize {
+    pub fn add(&self, other: &Matrix) -> Result<Matrix, String> {
 
-        if let Some(rank) = self.rank {
-            return rank;
+        if self.is_valid(other, "+") {
+
+            let mut res: Vec<Vec<f64>> = Vec::new();
+
+            for i in 0..self.shape.0 {
+                let mut row: Vec<f64> = Vec::new();
+
+                for j in 0..self.shape.1 {
+                    row.push(self.array[i][j] + other.array[i][j]);
+                }
+                res.push(row);
+            }
+
+            Ok(Matrix::new(res))
+
+        } else {
+            Err(" [-] La suma solo es valida entre matrices de la misma long.".to_string())
         }
-
-        let rank = self.calculate_rank();
-        self.rank = Some(rank);
-        return rank
     }
 
-    pub fn calculate_rank(&self) -> usize {
-
-        let m = self.shape.0;
-        let n = self.shape.1;
-
-        let mut rank = m.min(n);
-        let mut array = self.array.clone();
-    }
 }
-
-
-
 
 
 

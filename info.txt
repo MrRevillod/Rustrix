@@ -1,0 +1,17 @@
+
+calculate_det:
+
+    Si el pivote es 0, intercambiar filas
+    por lo tanto segun esa trans elemental
+    se debe cambiar el signo del det
+
+    Si todas las filas debajo del pivote son nulas
+    el determinante es 0
+    Se asume esto ya que no hay transformacion que cambie el pivot
+
+    Eliminar elementos por debajo del pivote
+    En este paso se aplican tranformaciones del 3er
+    tipo o sea no alteran el determinante
+
+    Se multiplica el determinante actual por el pivote
+    presente en la diagonal principal
