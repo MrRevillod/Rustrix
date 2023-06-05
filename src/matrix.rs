@@ -11,6 +11,7 @@ impl Matrix {
     pub fn new(array: Vec<Vec<f64>>) -> Matrix {
 
         let shape = (array.len(), array[0].len());
+
         Matrix {
             array,
             det: None,
@@ -20,7 +21,9 @@ impl Matrix {
     }
 
     pub fn show(&self) {
+
         println!();
+
         for row in &self.array {
             println!("  [{}]",
                      row.iter()
@@ -29,6 +32,7 @@ impl Matrix {
                      .join(" ")
             );
         }
+
         println!();
     }
 
@@ -41,19 +45,11 @@ impl Matrix {
         }
     }
 
-    pub fn get_det(&mut self) -> f64 {
+    pub fn det(&mut self) -> f64 {
 
         if let Some(det) = self.det {
-            return det;
+            return det
         }
-
-        let det = self.calculate_det();
-        self.det = Some(det);
-        return det
-    }
-
-
-    pub fn calculate_det(&self) -> f64 {
 
         let n = self.shape.0;
         let mut det = 1.0;
@@ -91,29 +87,23 @@ impl Matrix {
         }
 
         det = (det * 100.0).round() / 100.0;
-        return det
+        self.det = Some(det);
+        self.det.unwrap()
     }
 
-    pub fn add(&self, other: &Matrix) -> Result<Matrix, String> {
+    pub fn transposed(&self) -> Matrix {
 
-        if self.is_valid(other, "+") {
+        let rows = self.shape.0;
+        let cols = self.shape.1;
+        let mut res = self.array.clone();
 
-            let mut res: Vec<Vec<f64>> = Vec::new();
-
-            for i in 0..self.shape.0 {
-                let mut row: Vec<f64> = Vec::new();
-
-                for j in 0..self.shape.1 {
-                    row.push(self.array[i][j] + other.array[i][j]);
-                }
-                res.push(row);
+        for i in 0..rows {
+            for j in 0..cols {
+                res[j][i] = self.array[i][j];
             }
-
-            Ok(Matrix::new(res))
-
-        } else {
-            Err(" [-] La suma solo es valida entre matrices de la misma long.".to_string())
         }
+
+        Matrix::new(res)
     }
 
 }

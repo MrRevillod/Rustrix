@@ -9,6 +9,7 @@ pub struct Menu {
 }
 
 impl Menu {
+
     pub fn new() -> Menu {
         Menu { run: false }
     }
@@ -20,10 +21,8 @@ impl Menu {
             " [1]. Calcular Determinante           ",
             " [2]. Calcular Rango                  ",
             " [3]. Calcular Inversa                ",
-            " [4]. Sumar Matrices                  ",
-            " [5]. Restar Matrices                 ",
-            " [6]. Multiplicar Matrices            ",
-            " [7]. Salir                           ",
+            " [4]. Calcular Transpuesta            ",
+            " [5]. Salir                           ",
         ];
 
         let select = Select::new()
@@ -36,18 +35,17 @@ impl Menu {
     }
 
     pub fn run(&mut self) {
+
         loop {
             let select = self.create_menu();
             self.clear_term();
 
             match select {
-                0 => self.calculate_det(),
-                1 => self.calculate_det(),
-                2 => self.calculate_det(),
-                3 => self.calculate_det(),
-                4 => self.calculate_det(),
-                5 => self.calculate_det(),
-                6 => {
+                0 => self.get_det(),
+                1 => self.get_det(),
+                2 => self.get_det(),
+                3 => self.get_trans(),
+                4 => {
                     self.bye();
                     break;
                 }
@@ -71,10 +69,11 @@ impl Menu {
     }
 
     pub fn bye(&self) {
-        println!("¡Hasta luego!");
+        println!("\n [-] ¡Hasta luego!\n");
     }
 
     pub fn clear_term(&self) {
+
         if cfg!(target_os = "windows") {
             let _ = process::Command::new("cmd").arg("/c").arg("cls").status();
         } else {
@@ -120,6 +119,7 @@ impl Menu {
     pub fn get_cant(&self) -> i32 {
         let num = self.get_integer(" [-] Cant. de matrices con las que vas a operar: ");
         println!(" ");
+
         num
     }
 
@@ -128,7 +128,7 @@ impl Menu {
         let cols = self.get_integer(" [-] Cantidad de columnas de tu matriz: ") as usize;
         println!(" ");
 
-        return (rows, cols)
+        (rows, cols)
     }
 
     pub fn create_matrix(&self, shape: (usize, usize)) -> Matrix {
@@ -151,7 +151,8 @@ impl Menu {
         Matrix::new(array)
     }
 
-    pub fn calculate_det(&self) {
+    pub fn get_det(&self) {
+
         let shape = self.get_dimensions();
         if shape.0 != shape.1 {
             println!("\n [-] Para calcular determinante la matríz debe ser cuadrada. \n");
@@ -159,9 +160,19 @@ impl Menu {
         }
 
         let mut matrix = self.create_matrix(shape);
-        let det = matrix.get_det();
+        let det = matrix.det();
 
         println!(" [-] El determinante de la matríz es: {}", det);
+    }
+
+    pub fn get_trans(&self) {
+
+        let shape = self.get_dimensions();
+        let matrix = self.create_matrix(shape);
+
+        let trans = matrix.transposed();
+
+        trans.show();
     }
 }
 
