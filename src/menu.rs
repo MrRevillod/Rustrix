@@ -1,8 +1,5 @@
 
 use dialoguer::{Input, Select};
-use colored::*;
-
-use crate::Matrix;
 use crate::utils;
 
 pub struct Menu;
@@ -41,7 +38,7 @@ impl Menu {
             match select {
                 0 => self.get_det(),
                 1 => self.get_det(),
-                2 => self.get_det(),
+                2 => self.get_inv(),
                 3 => self.get_trans(),
                 4 => {
                     self.bye();
@@ -83,9 +80,25 @@ impl Menu {
         println!(" [-] El determinante de la matríz es: {}", det);
     }
 
+    pub fn get_inv(&self) {
+        let shape = utils::get_dimensions();
+        if shape.0 != shape.1 {
+            println!("\n [-] Para calcular determinante la matríz debe ser cuadrada. \n");
+            return;
+        }
+
+        let mut matrix = utils::create_matrix(shape);
+        let inverse = matrix.inv();
+
+        println!(" [-] La inversa de la matríz es: ");
+        inverse.show();
+    }
+
     pub fn get_trans(&self) {
         let shape = utils::get_dimensions();
         let matrix = utils::create_matrix(shape);
+
+        println!(" [-] La Matríz transpuesta es: \n");
 
         let transposed = matrix.transposed();
         transposed.show();

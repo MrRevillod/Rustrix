@@ -83,3 +83,16 @@ pub fn create_matrix(shape: (usize, usize)) -> Matrix {
 
     Matrix::new(array)
 }
+
+pub fn to_frac(number: f64, decimals: usize) -> String {
+    let factor = 10_f64.powi(decimals as i32);
+    let rounded = (number * factor).round();
+    let numerator = rounded as i64;
+    let denominator = factor as i64;
+
+    if denominator == 1 {
+        return numerator.to_string();
+    }
+
+    format!("{}/{}", numerator, denominator)
+}
