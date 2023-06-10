@@ -1,6 +1,5 @@
-
-use std::io::{self, Write};
 use crate::Matrix;
+use std::io::{self, Write};
 use std::process;
 
 pub fn clear_term() {
@@ -44,13 +43,6 @@ pub fn get_float(message: &str) -> f64 {
     }
 }
 
-pub fn get_cant() -> i32 {
-    let num = get_integer(" [-] Cant. de matrices con las que vas a operar: ");
-    println!(" ");
-
-    num
-}
-
 pub fn get_dimensions() -> (usize, usize) {
     loop {
         let rows = get_integer(" [-] Cantidad de filas de tu matriz: ") as usize;
@@ -58,7 +50,7 @@ pub fn get_dimensions() -> (usize, usize) {
         println!(" ");
 
         if rows | cols != 0 {
-            return (rows, cols)
+            return (rows, cols);
         } else {
             println!("\n [-] Error: Has ingresado un número invalido.");
         }
@@ -82,17 +74,4 @@ pub fn create_matrix(shape: (usize, usize)) -> Matrix {
     println!(" ");
 
     Matrix::new(array)
-}
-
-pub fn to_frac(number: f64, decimals: usize) -> String {
-    let factor = 10_f64.powi(decimals as i32);
-    let rounded = (number * factor).round();
-    let numerator = rounded as i64;
-    let denominator = factor as i64;
-
-    if denominator == 1 {
-        return numerator.to_string();
-    }
-
-    format!("{}/{}", numerator, denominator)
 }

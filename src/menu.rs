@@ -1,11 +1,9 @@
-
-use dialoguer::{Input, Select};
 use crate::utils;
+use dialoguer::{Input, Select};
 
 pub struct Menu;
 
 impl Menu {
-
     pub fn new() -> Menu {
         Menu
     }
@@ -37,7 +35,7 @@ impl Menu {
 
             match select {
                 0 => self.get_det(),
-                1 => self.get_det(),
+                1 => self.get_rank(),
                 2 => self.get_inv(),
                 3 => self.get_trans(),
                 4 => {
@@ -78,6 +76,14 @@ impl Menu {
         let det = matrix.det();
 
         println!(" [-] El determinante de la matríz es: {}", det);
+    }
+
+    pub fn get_rank(&self) {
+        let shape = utils::get_dimensions();
+        let mut matrix = utils::create_matrix(shape);
+        let rank = matrix.rank();
+
+        println!(" [-] El rango de la matríz es: {}", rank);
     }
 
     pub fn get_inv(&self) {

@@ -1,4 +1,3 @@
-
 mod matrix;
 use matrix::Matrix;
 
@@ -8,5 +7,6 @@ use menu::Menu;
 mod utils;
 
 fn main() {
-    let mut menu = Menu::new(); menu.run();
+    let mut menu = Menu::new();
+    menu.run();
 }

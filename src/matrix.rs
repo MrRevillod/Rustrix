@@ -1,6 +1,4 @@
-
-use std::ops::{Add, Mul, Sub};
-use crate::utils;
+use std::ops::Mul;
 
 pub struct Matrix {
     array: Vec<Vec<f64>>,
@@ -10,9 +8,7 @@ pub struct Matrix {
 }
 
 impl Matrix {
-
     pub fn new(array: Vec<Vec<f64>>) -> Matrix {
-
         let shape = (array.len(), array[0].len());
 
         Matrix {
@@ -25,56 +21,34 @@ impl Matrix {
 
     pub fn show(&self) {
         println!();
-
         for row in &self.array {
-            let truncated_row: Vec<String> = row.iter()
-                .map(|&e| {
-                    if e.fract() == 0.0 {
-                        e.to_string()
-                    } else {
-                        utils::to_frac(e, 3).to_string()
-                    }
-                })
-                .collect();
-
-            println!("[{}]", truncated_row.join(" "));
+            print!(" [ ");
+            for value in row {
+                print!(" {:.2} ", value);
+            }
+            println!("]");
         }
-
         println!();
     }
 
-
-
-    pub fn is_valid(&self, other: &Matrix, op: &str) -> bool {
-
-        match op {
-            "+" | "-" => self.shape == other.shape,
-            "x" => self.shape.1 == other.shape.0,
-            _ => false,
-        }
-    }
-
     pub fn det(&mut self) -> f64 {
-
         if let Some(det) = self.det {
-            return det
+            return det;
         }
 
         let n = self.shape.0;
 
         if n == 1 {
-            return self.array[0][0]
+            return self.array[0][0];
         }
 
         let mut det = 1.0;
         let mut array = self.array.clone();
 
         for i in 0..n {
-
             let mut pivot = array[i][i];
 
             if pivot == 0.0 {
-
                 for j in (i + 1)..n {
                     if array[j][i] != 0.0 {
                         array.swap(i, j);
@@ -86,7 +60,6 @@ impl Matrix {
                 if array[i][i] == 0.0 {
                     return 0.0;
                 }
-
                 pivot = array[i][i];
             }
 
@@ -100,13 +73,59 @@ impl Matrix {
             det *= pivot;
         }
 
-        det = (det * 100.0).round() / 100.0;
         self.det = Some(det);
         self.det.unwrap()
     }
 
-    pub fn transposed(&self) -> Matrix {
+    pub fn rank(&mut self) -> usize {
+        if let Some(rank) = self.rank {
+            return rank;
+        }
 
+        let mut array = self.array.clone();
+        let n = self.shape.0;
+        let m = self.shape.1;
+
+        if n == 1 || m == 1 {
+            let rank = array.iter().flatten().filter(|&&x| x != 0.0).count();
+            self.rank = Some(rank);
+            return rank;
+        }
+
+        let mut rank = 0;
+
+        for i in 0..n {
+            let mut pivot = array[i][rank];
+
+            if pivot == 0.0 {
+                for j in (i + 1)..n {
+                    if array[j][rank] != 0.0 {
+                        array.swap(i, j);
+                        break;
+                    }
+                }
+
+                if array[i][rank] == 0.0 {
+                    continue;
+                }
+                pivot = array[i][rank];
+            }
+
+            for j in (i + 1)..n {
+                let factor = array[j][rank] / pivot;
+                for k in rank..m {
+                    array[j][k] -= array[i][k] * factor;
+                }
+            }
+
+            rank += 1;
+        }
+
+        self.rank = Some(rank);
+        self.rank.unwrap()
+    }
+
+    pub fn transposed(&self) -> Matrix {
         let rows = self.shape.0;
         let cols = self.shape.1;
         let mut res = self.array.clone();
@@ -121,7 +140,6 @@ impl Matrix {
     }
 
     pub fn minor(&self, i: usize, j: usize) -> Matrix {
-
         let rows = self.shape.0;
         let cols = self.shape.1;
         let mut res = vec![vec![0.0; cols - 1]; rows - 1];
@@ -148,8 +166,8 @@ impl Matrix {
 
     pub fn cof(&self, i: usize, j: usize) -> f64 {
         let mut minor = self.minor(i, j);
-        let sign = if (i + j) % 2 == 0 {1.0} else {-1.0};
-        return sign * minor.det()
+        let sign = if (i + j) % 2 == 0 { 1.0 } else { -1.0 };
+        return sign * minor.det();
     }
 
     pub fn cofactors(&self) -> Matrix {
@@ -157,9 +175,8 @@ impl Matrix {
         let cols = self.shape.1;
 
         if rows == 1 && cols == 1 {
-            return Matrix::new(vec![vec![1.0]])
+            return Matrix::new(vec![vec![1.0]]);
         }
-
 
         let mut cofactors = vec![vec![0.0; cols]; rows];
 
@@ -174,82 +191,17 @@ impl Matrix {
 
     pub fn inv(&mut self) -> Matrix {
         let det = self.det();
+
         let cofactors = self.cofactors();
         let inv = cofactors.transposed() * (1.0 / det);
-        inv
-    }
-
-}
-
-impl Add<Matrix> for Matrix {
-
-    type Output = Matrix;
-
-    fn add(self, other: Matrix ) -> Matrix {
-
-        let rows = self.shape.0;
-        let cols = self.shape.1;
-        let mut res = vec![vec![0.0; cols]; rows];
-
-        for m in 0..rows {
-            for n in 0..cols {
-                res[m][n] = self.array[m][n] + other.array[m][n];
-            }
-        }
-
-        Matrix::new(res)
-    }
-}
-
-impl Sub<Matrix> for Matrix {
-
-    type Output = Matrix;
-
-    fn sub(self, other: Matrix ) -> Matrix {
-
-        let rows = self.shape.0;
-        let cols = self.shape.1;
-        let mut res = vec![vec![0.0; cols]; rows];
-
-        for m in 0..rows {
-            for n in 0..cols {
-                res[m][n] = self.array[m][n] - other.array[m][n];
-            }
-        }
-
-        Matrix::new(res)
-    }
-}
-
-impl Mul<Matrix> for Matrix {
-
-    type Output = Matrix;
-
-    fn mul(self, other: Matrix ) -> Matrix {
-
-        let rows = self.shape.0;  // Matríz A rows
-        let cols = other.shape.1; // Matríz B cols
-
-        let mut res = vec![vec![0.0; rows]; cols];
-
-        for i in 0..rows {
-            for j in 0..cols {
-                for k in 0..other.shape.0 {
-                    res[i][j] += self.array[i][k] * other.array[k][j];
-                }
-            }
-        }
-
-        Matrix::new(res)
+        return inv;
     }
 }
 
 impl Mul<f64> for Matrix {
-
     type Output = Matrix;
 
     fn mul(self, scalar: f64) -> Matrix {
-
         let mut res = self.array;
         for row in &mut res {
             for element in row {
@@ -260,9 +212,3 @@ impl Mul<f64> for Matrix {
         Matrix::new(res)
     }
 }
-
-
-
-
-
-
