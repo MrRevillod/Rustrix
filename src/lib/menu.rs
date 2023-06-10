@@ -81,9 +81,13 @@ impl Menu {
     pub fn get_rank(&self) {
         let shape = utils::get_dimensions();
         let mut matrix = utils::create_matrix(shape);
-        let rank = matrix.rank();
 
-        println!(" [-] El rango de la matríz es: {}", rank);
+        println!("\n [-] Tu matríz es: \n");
+        matrix.show();
+
+        let rank = matrix.debug_rank();
+
+        println!("\n [-] El rango de la matríz es: {}", rank);
     }
 
     pub fn get_inv(&self) {

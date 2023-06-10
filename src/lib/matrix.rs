@@ -77,16 +77,18 @@ impl Matrix {
         self.det.unwrap()
     }
 
+/*
+
     pub fn rank(&mut self) -> usize {
         if let Some(rank) = self.rank {
             return rank;
         }
 
         let mut array = self.array.clone();
-        let n = self.shape.0;
-        let m = self.shape.1;
+        let rows = self.shape.0;
+        let cols = self.shape.1;
 
-        if n == 1 || m == 1 {
+        if rows == 1 || cols == 1 {
             let rank = array.iter().flatten().filter(|&&x| x != 0.0).count();
             self.rank = Some(rank);
             return rank;
@@ -94,27 +96,30 @@ impl Matrix {
 
         let mut rank = 0;
 
-        for i in 0..n {
-            let mut pivot = array[i][rank];
+        for r in 0..rows {
+            if rank >= cols {
+                break;
+            }
+            let mut pivot = array[r][rank];
 
             if pivot == 0.0 {
-                for j in (i + 1)..n {
+                for j in (r + 1)..rows {
                     if array[j][rank] != 0.0 {
-                        array.swap(i, j);
+                        array.swap(r, j);
                         break;
                     }
                 }
 
-                if array[i][rank] == 0.0 {
+                if array[r][rank] == 0.0 {
                     continue;
                 }
-                pivot = array[i][rank];
+                pivot = array[r][rank];
             }
 
-            for j in (i + 1)..n {
+            for j in (r + 1)..rows{
                 let factor = array[j][rank] / pivot;
-                for k in rank..m {
-                    array[j][k] -= array[i][k] * factor;
+                for k in rank..cols {
+                    array[j][k] -= array[r][k] * factor;
                 }
             }
 
@@ -122,7 +127,73 @@ impl Matrix {
         }
 
         self.rank = Some(rank);
-        self.rank.unwrap()
+        rank
+    }
+
+*/
+
+
+    pub fn debug_rank(&mut self) -> usize {
+        if let Some(rank) = self.rank {
+            return rank;
+        }
+
+        let mut array = self.array.clone();
+        let rows = self.shape.0;
+        let cols = self.shape.1;
+
+        if rows == 1 || cols == 1 {
+            let rank = array.iter().flatten().filter(|&&x| x != 0.0).count();
+            self.rank = Some(rank);
+            return rank;
+        }
+
+        let mut rank = 0;
+
+        for r in 0..rows {
+            if rank >= cols {
+                break;
+            }
+
+            let mut pivot = array[r][rank];
+
+            if pivot == 0.0 {
+                println!(" [-] Pivote cero encontrado en la fila {}, buscando un pivote no nulo...\n", r + 1);
+
+                for j in (r + 1)..rows {
+                    if array[j][rank] != 0.0 {
+                        println!(" [-] Intercambiando fila {} con fila {}", r + 1, j + 1);
+                        array.swap(r, j);
+                        break;
+                    }
+                }
+
+                if array[r][rank] == 0.0 {
+                    println!("No se encontró un pivote no nulo, pasando a la siguiente iteración...");
+                    continue;
+                }
+                pivot = array[r][rank];
+            }
+
+            println!(" [-] Iteración {}: Pivote encontrado en la fila {}", rank + 1, r + 1);
+
+            for j in (r + 1)..rows {
+                let factor = -array[j][rank] / pivot;
+                println!(" [-] Eliminación hacia abajo : Fila {} + Fila {} * {}", j + 1, r + 1, factor);
+                for k in rank..cols {
+                    array[j][k] += array[r][k] * factor;
+                }
+            }
+
+            rank += 1;
+        }
+
+        println!("\n Matríz final: ");
+        let matrix = Matrix::new(array);
+        matrix.show();
+
+        self.rank = Some(rank);
+        rank
     }
 
     pub fn transposed(&self) -> Matrix {

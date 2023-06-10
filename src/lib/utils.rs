@@ -17,7 +17,13 @@ pub fn get_integer(message: &str) -> i32 {
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
         match input.trim().parse::<i32>() {
-            Ok(num) => return num,
+            Ok(num) => {
+                if num > 0 {
+                    return num;
+                } else {
+                    println!("\n [-] Error: Debes ingresar un número entero mayor que cero.\n");
+                }
+            }
             Err(_) => {
                 println!("\n [-] Error: Debes ingresar un número entero.\n");
             }
@@ -49,10 +55,10 @@ pub fn get_dimensions() -> (usize, usize) {
         let cols = get_integer(" [-] Cantidad de columnas de tu matriz: ") as usize;
         println!(" ");
 
-        if rows | cols != 0 {
+        if rows > 0 && cols > 0 {
             return (rows, cols);
         } else {
-            println!("\n [-] Error: Has ingresado un número invalido.");
+            continue;
         }
     }
 }
