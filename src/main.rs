@@ -1,10 +1,12 @@
-mod matrix;
-use matrix::Matrix;
+mod lib {
+    pub mod matrix;
+    pub mod menu;
+    pub mod utils;
+}
 
-mod menu;
-use menu::Menu;
-
-mod utils;
+use lib::matrix::Matrix;
+use lib::menu::Menu;
+use lib::utils;
 
 fn main() {
     let mut menu = Menu::new();
