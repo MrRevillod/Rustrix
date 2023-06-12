@@ -20,7 +20,7 @@ impl Menu {
         ];
 
         let select = Select::new()
-            .with_prompt("Seleccione una opción")
+            .with_prompt("\n Seleccione una opción")
             .items(options)
             .interact()
             .unwrap();
@@ -82,7 +82,7 @@ impl Menu {
         let shape = utils::get_dimensions();
         let mut matrix = utils::create_matrix(shape);
 
-        println!("\n [-] Tu matríz es: \n");
+        println!("\n Tu matríz es: ");
         matrix.show();
 
         let rank = matrix.debug_rank();

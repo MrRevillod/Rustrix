@@ -158,7 +158,7 @@ impl Matrix {
             let mut pivot = array[r][rank];
 
             if pivot == 0.0 {
-                println!(" [-] Pivote cero encontrado en la fila {}, buscando un pivote no nulo...\n", r + 1);
+                println!(" [-] Pivote cero encontrado en la fila {}, buscando un pivote no nulo\n", r + 1);
 
                 for j in (r + 1)..rows {
                     if array[j][rank] != 0.0 {
