@@ -15,8 +15,7 @@ impl Menu {
             " [1]. Calcular Determinante           ",
             " [2]. Calcular Rango                  ",
             " [3]. Calcular Inversa                ",
-            " [4]. Calcular Transpuesta            ",
-            " [5]. Salir                           ",
+            " [4]. Salir                           ",
         ];
 
         let select = Select::new()
@@ -37,8 +36,7 @@ impl Menu {
                 0 => self.get_det(),
                 1 => self.get_rank(),
                 2 => self.get_inv(),
-                3 => self.get_trans(),
-                4 => {
+                3 => {
                     self.bye();
                     break;
                 }
@@ -73,6 +71,7 @@ impl Menu {
         }
 
         let mut matrix = utils::create_matrix(shape);
+        matrix.show();
         let det = matrix.det();
         println!(" [-] El determinante de la matríz es: {}", det);
     }
@@ -81,6 +80,7 @@ impl Menu {
         let shape = utils::get_dimensions();
         let mut matrix = utils::create_matrix(shape);
 
+        matrix.show();
         let rank = matrix.rank();
         println!(" [-] El rango de la matríz es: {}", rank);
     }
@@ -93,6 +93,7 @@ impl Menu {
         }
 
         let mut matrix = utils::create_matrix(shape);
+        matrix.show();
         let inverse = matrix.inv();
 
         match inverse {
@@ -104,15 +105,5 @@ impl Menu {
                 println!(" [-] Error al calcular la inversa: {}", err);
             }
         }
-    }
-
-    pub fn get_trans(&self) {
-        let shape = utils::get_dimensions();
-        let matrix = utils::create_matrix(shape);
-
-        println!(" [-] La Matríz transpuesta es: \n");
-
-        let transposed = matrix.transposed();
-        transposed.show();
     }
 }

@@ -22,15 +22,8 @@ impl Matrix {
     }
 
     pub fn show(&self) {
-        println!();
-        for row in &self.array {
-            print!(" [ ");
-            for value in row {
-                print!(" {:.2} ", value);
-            }
-            println!("]");
-        }
-        println!();
+        println!(" [-] Matríz ingresada:");
+        utils::show_array(&self.array);
     }
 
     pub fn det(&mut self) -> f64 {
@@ -39,24 +32,17 @@ impl Matrix {
         }
 
         let rows = self.shape.0;
+        let mut det = 1.0;
+        let mut array = self.array.clone();
 
         if rows == 1 {
             return self.array[0][0]
         }
 
-        let mut det = 1.0;
-        let mut array = self.array.clone();
-
-        println!(" [-] Matríz ingresada:");
-        utils::show_array(&array);
-
         for i in 0..rows {
             let mut pivot = array[i][i];
 
             if pivot == 0.0 {
-
-                // [-] intercambio de filas i + 1 y j + 1
-                // [-] el determinante cambia de signo..
 
                 for j in (i + 1)..rows {
                     if array[j][i] != 0.0 {
@@ -72,8 +58,6 @@ impl Matrix {
 
                 pivot = array[i][i];
             }
-
-            // [-] Eliminación: (j + 1) + (i + 1) * factor
 
             for j in (i + 1)..rows {
                 let factor = -array[j][i] / pivot;
