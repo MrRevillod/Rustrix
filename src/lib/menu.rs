@@ -74,7 +74,6 @@ impl Menu {
 
         let mut matrix = utils::create_matrix(shape);
         let det = matrix.det();
-
         println!(" [-] El determinante de la matríz es: {}", det);
     }
 
@@ -82,26 +81,29 @@ impl Menu {
         let shape = utils::get_dimensions();
         let mut matrix = utils::create_matrix(shape);
 
-        println!("\n Tu matríz es: ");
-        matrix.show();
-
-        let rank = matrix.debug_rank();
-
-        println!("\n [-] El rango de la matríz es: {}", rank);
+        let rank = matrix.rank();
+        println!(" [-] El rango de la matríz es: {}", rank);
     }
 
     pub fn get_inv(&self) {
         let shape = utils::get_dimensions();
         if shape.0 != shape.1 {
-            println!("\n [-] Para calcular determinante la matríz debe ser cuadrada. \n");
+            println!("\n [-] Para calcular la inversa, la matriz debe ser cuadrada. \n");
             return;
         }
 
         let mut matrix = utils::create_matrix(shape);
         let inverse = matrix.inv();
 
-        println!(" [-] La inversa de la matríz es: ");
-        inverse.show();
+        match inverse {
+            Ok(inv) => {
+                println!(" [-] La inversa de la matriz es:");
+                inv.show();
+            }
+            Err(err) => {
+                println!(" [-] Error al calcular la inversa: {}", err);
+            }
+        }
     }
 
     pub fn get_trans(&self) {
