@@ -22,7 +22,6 @@ impl Matrix {
     }
 
     pub fn show(&self) {
-        println!(" [-] Matríz ingresada:");
         utils::show_array(&self.array);
     }
 
@@ -48,6 +47,8 @@ impl Matrix {
                     if array[j][i] != 0.0 {
                         array.swap(i, j);
                         det *= -1.0;
+
+                        println!("cambio de fila {} y {}", i + 1, j + 1);
                         break;
                     }
                 }
@@ -63,11 +64,14 @@ impl Matrix {
                 let factor = -array[j][i] / pivot;
                 for k in i..rows {
                     array[j][k] += array[i][k] * factor;
+                    println!("TL Fila {} + Fila {} * {}", j + 1, i + 1, factor);
                 }
             }
 
             det *= pivot;
         }
+
+        utils::show_array(&array);
 
         self.det = Some(det);
         self.det.unwrap()
@@ -95,7 +99,7 @@ impl Matrix {
         }
 
         self.rank = Some(0);
-        0
+        return 0
     }
 
     fn submatrix(&self, start_row: usize, start_col: usize, size: usize) -> Matrix {
