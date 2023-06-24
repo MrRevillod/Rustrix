@@ -83,15 +83,13 @@ pub fn create_matrix(shape: (usize, usize)) -> Matrix {
 }
 
 pub fn show_array(array: &Vec<Vec<f64>>) {
-
-        println!();
-        for row in array {
-            print!(" [ ");
-            for value in row {
-                print!(" {:.2} ", value);
-            }
-            println!("]");
+    println!();
+    for row in array {
+        print!(" [ ");
+        for value in row {
+            print!(" {:.2} ", value);
         }
-        println!();
-
+        println!("]");
+    }
+    println!();
 }

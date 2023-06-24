@@ -10,20 +10,20 @@ impl Menu {
 
     pub fn create_menu(&self) -> usize {
         utils::clear_term();
+        println!("\n");
 
         let options = &[
             " [1]. Calcular Determinante           ",
             " [2]. Calcular Rango                  ",
-            " [3]. Calcular Inversa                ",
-            " [4]. Salir                           ",
+            " [3]. Salir                           ",
         ];
 
         let select = Select::new()
-            .with_prompt("\n Seleccione una opción")
             .items(options)
             .interact()
             .unwrap();
 
+        println!();
         select
     }
 
@@ -35,8 +35,7 @@ impl Menu {
             match select {
                 0 => self.get_det(),
                 1 => self.get_rank(),
-                2 => self.get_inv(),
-                3 => {
+                2 => {
                     self.bye();
                     break;
                 }
@@ -71,6 +70,7 @@ impl Menu {
         }
 
         let mut matrix = utils::create_matrix(shape);
+        println!(" Tu matríz es: ");
         matrix.show();
         let det = matrix.det();
         println!(" [-] El determinante de la matríz es: {}", det);
@@ -80,30 +80,9 @@ impl Menu {
         let shape = utils::get_dimensions();
         let mut matrix = utils::create_matrix(shape);
 
+        println!(" Tu matríz es: ");
         matrix.show();
         let rank = matrix.rank();
         println!(" [-] El rango de la matríz es: {}", rank);
-    }
-
-    pub fn get_inv(&self) {
-        let shape = utils::get_dimensions();
-        if shape.0 != shape.1 {
-            println!("\n [-] Para calcular la inversa, la matriz debe ser cuadrada. \n");
-            return;
-        }
-
-        let mut matrix = utils::create_matrix(shape);
-        matrix.show();
-        let inverse = matrix.inv();
-
-        match inverse {
-            Ok(inv) => {
-                println!(" [-] La inversa de la matriz es:");
-                inv.show();
-            }
-            Err(err) => {
-                println!(" [-] Error al calcular la inversa: {}", err);
-            }
-        }
     }
 }
