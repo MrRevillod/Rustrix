@@ -1,3 +1,4 @@
+
 use crate::utils;
 
 pub struct Matrix {
@@ -51,7 +52,6 @@ impl Matrix {
                 if array[i][i] == 0.0 {
                     return 0.0
                 }
-
                 pivot = array[i][i];
             }
 
@@ -66,7 +66,7 @@ impl Matrix {
         }
 
         self.det = Some(det);
-        self.det.unwrap()
+        return self.det.unwrap()
     }
 
     pub fn rank(&mut self) -> usize {
@@ -79,22 +79,37 @@ impl Matrix {
 
         println!(" Rango máximo: {}", max_dim);
 
+        /* Bucle que recorre todas las dim de submatrices desde max_dim hasta 1.*/
+
         for size in (1..=max_dim).rev() {
             println!(" Tamaño de la submatriz actual: {}\n", size);
+
+            /* Bucles que recorren rows y cols de la matriz en busca de una submatríz*/
+            /*    Se usa el rango maximo de rows-size para evitar desbordamiento     */
+
             for row in 0..=rows - size {
-                println!(" Fila: {}, resta: {}", row, rows - size);
                 for col in 0..=cols - size {
-                    println!(" Columna: {}, resta: {}\n", col, cols - size);
                     println!(" Posición de inicio de la submatriz: ({}, {})", row, col);
+
+                    /*    Se crea una submatríz cuadrada de mayor orden posible   */
+
                     let mut submatrix = self.submatrix(row, col, size);
+
                     println!(" Submatriz actual:");
                     submatrix.show();
+
+                    /*  Se comprueba que el determinante de la submatríz sea != 0 */
+
                     if submatrix.det() != 0.0 {
                         println!(" [-] Determinante != 0 encontrado...");
                         self.rank = Some(size);
                         return size
                     }
-                    println!(" [-] Determinante == 0 encontrado...");
+
+                    /*          Si el det es != 0 se retorna el tamaño (size)         */
+                    /* De lo contrario se pasa a la sig iteración del ciclo principal */
+
+                    println!(" [-] Determinante == 0 encontrado...\n");
                 }
             }
         }
@@ -103,34 +118,27 @@ impl Matrix {
         return 0
     }
 
+    /* Función submatrix*/
+    /* Recibe las coordenadas de fila y columna de inicio y el tamaño de la nueva matríz */
+
     fn submatrix(&self, row: usize, col: usize, size: usize) -> Matrix {
+
+        /* Se crea una matriz de tamaño sizeXsize llena de 0 */
+
         let mut array = vec![vec![0.0; size]; size];
+
+        /* Se itera en rango de las dimenciones establecidas */
+
         for i in 0..size {
             for j in 0..size {
+
+                /* La nueva matríz estará formada por los elementos de la matríz og         */
+                /* pero con los elementos de las posiciones establecidas por los parametros */
+
                 array[i][j] = self.array[row + i][col + j];
             }
         }
 
-        Matrix::new(array)
-    }
-
-    pub fn info() {
-        println!(
-            "
-                Se recorren las filas. Si el pivot es cero:
-                se busca un pivote no nulo por las filas i + 1
-
-                Si se encuentra un pivote no nulo se hace swap
-                y se cambia el signo del determinante.
-
-
-                Luego de verificar lo anterior se recorren las filas
-                por debajo del pivote en busca de la eliminación de gauss
-
-                Se calcula el factor (eliminación) y se recorren
-                nuevamente las filas, por cada elemento en la fila
-                a eliminar se le sima su elemento superior * el factor de eliminación
-            "
-        );
+        return Matrix::new(array)
     }
 }
