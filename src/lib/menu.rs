@@ -1,5 +1,5 @@
+use crate::Matrix;
 use crate::utils;
-use dialoguer::{Input, Select};
 
 pub struct Menu;
 
@@ -8,81 +8,34 @@ impl Menu {
         Menu
     }
 
-    pub fn create_menu(&self) -> usize {
-        utils::clear_term();
-        println!("\n");
-
-        let options = &[
-            " [1]. Calcular Determinante           ",
-            " [2]. Calcular Rango                  ",
-            " [3]. Salir                           ",
-        ];
-
-        let select = Select::new()
-            .items(options)
-            .interact()
-            .unwrap();
-
-        println!();
-        select
-    }
-
     pub fn run(&mut self) {
-        loop {
-            let select = self.create_menu();
-            utils::clear_term();
+        let array = vec![vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0], vec![7.0, 8.0, 9.0]];
 
-            match select {
-                0 => self.get_det(),
-                1 => self.get_rank(),
-                2 => {
-                    self.bye();
-                    break;
-                }
-                _ => {
-                    println!(" [-] Opción inválida");
-                }
-            }
+        let shape = (array.len() as u32, array[0].len() as u32);
+        let mut matrix = Matrix::new(array);
 
-            let repeat: String = Input::new()
-                .with_prompt(" [?] ¿Deseas realizar otra operación? (s/n): ")
-                .interact()
-                .unwrap();
+        utils::clear_term();
 
-            if repeat.to_lowercase() != "s" {
-                self.bye();
-                break;
-            } else {
-                utils::clear_term();
-            }
-        }
+        println!("\n [-] Tu matriz es:");
+        matrix.show();
+
+        self.get_det(&mut matrix, shape);
+        self.get_rank(&mut matrix);
     }
 
-    pub fn bye(&self) {
-        println!("\n [-] ¡Hasta luego!\n");
-    }
-
-    pub fn get_det(&self) {
-        let shape = utils::get_dimensions();
+    pub fn get_det(&self, matrix: &mut Matrix, shape: (u32, u32)) {
         if shape.0 != shape.1 {
-            println!("\n [-] Para calcular determinante la matríz debe ser cuadrada. \n");
+            println!("\n[-] Para calcular el determinante, la matriz debe ser cuadrada.\n");
             return;
         }
 
-        let mut matrix = utils::create_matrix(shape);
-        println!(" Tu matríz es: ");
-        matrix.show();
         let det = matrix.det();
-        println!(" [-] El determinante de la matríz es: {}", det);
+        println!(" [-] El determinante de la matriz es: {}\n", det);
     }
 
-    pub fn get_rank(&self) {
-        let shape = utils::get_dimensions();
-        let mut matrix = utils::create_matrix(shape);
-
-        println!(" Tu matríz es: ");
-        matrix.show();
+    pub fn get_rank(&self, matrix: &mut Matrix) {
         let rank = matrix.rank();
-        println!(" [-] El rango de la matríz es: {}", rank);
+        println!(" [-] El rango de la matriz es: {}\n", rank);
     }
 }
+
