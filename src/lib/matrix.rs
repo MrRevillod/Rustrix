@@ -9,6 +9,7 @@ pub struct Matrix {
 }
 
 impl Matrix {
+
     pub fn new(array: Vec<Vec<f64>>) -> Matrix {
         let shape = (array.len(), array[0].len());
 

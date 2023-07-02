@@ -4,12 +4,20 @@ use crate::utils;
 pub struct Menu;
 
 impl Menu {
+
     pub fn new() -> Menu {
         Menu
     }
 
     pub fn run(&mut self) {
-        let array = vec![vec![1.0, 2.0, 3.0], vec![4.0, 5.0, 6.0], vec![7.0, 8.0, 9.0]];
+
+        /* Inserta aquí la matríz */
+
+        let array = vec![
+            vec![1.0, 2.0, 3.0],
+            vec![4.0, 5.0, 6.0],
+            vec![7.0, 8.0, 9.0],
+        ];
 
         let shape = (array.len() as u32, array[0].len() as u32);
         let mut matrix = Matrix::new(array);
