@@ -6,6 +6,7 @@ pub struct Matrix {
     det: Option<f64>,
     rank: Option<usize>,
     shape: (usize, usize),
+    epsilom: f64,
 }
 
 impl Matrix {
@@ -18,6 +19,7 @@ impl Matrix {
             det: None,
             rank: None,
             shape,
+            epsilom: 1e-6,
         }
     }
 
@@ -64,6 +66,10 @@ impl Matrix {
             }
 
             det *= pivot;
+        }
+
+        if det < self.epsilom {
+            det = 0.0;
         }
 
         self.det = Some(det);

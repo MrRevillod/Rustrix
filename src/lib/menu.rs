@@ -28,7 +28,7 @@ impl Menu {
         matrix.show();
 
         self.get_det(&mut matrix, shape);
-        self.get_rank(&mut matrix);
+        // self.get_rank(&mut matrix);
     }
 
     pub fn get_det(&self, matrix: &mut Matrix, shape: (u32, u32)) {
