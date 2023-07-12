@@ -3,14 +3,6 @@
 version = 3
 
 [[package]]
-name = "Rustrix"
-version = "0.1.0"
-dependencies = [
- "colored",
- "dialoguer",
-]
-
-[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -185,6 +177,14 @@ dependencies = [
  "libc",
  "linux-raw-sys",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "rustrix"
+version = "0.1.0"
+dependencies = [
+ "colored",
+ "dialoguer",
 ]
 
 [[package]]

@@ -1,16 +1,13 @@
-
-use crate::utils;
+use crate::lib::utils;
 
 pub struct Matrix {
     array: Vec<Vec<f64>>,
     det: Option<f64>,
     rank: Option<usize>,
     shape: (usize, usize),
-    epsilom: f64,
 }
 
 impl Matrix {
-
     pub fn new(array: Vec<Vec<f64>>) -> Matrix {
         let shape = (array.len(), array[0].len());
 
@@ -19,7 +16,6 @@ impl Matrix {
             det: None,
             rank: None,
             shape,
-            epsilom: 1e-6,
         }
     }
 
@@ -27,9 +23,21 @@ impl Matrix {
         utils::show_array(&self.array);
     }
 
-    pub fn det(&mut self) -> f64 {
+    pub fn is_squared(&self) -> bool {
+        match (self.shape.0, self.shape.1) {
+            (rows, cols) if rows == cols => true,
+
+            _ => false,
+        }
+    }
+
+    pub fn det(&mut self) -> Result<f64, &str> {
         if let Some(det) = self.det {
-            return det
+            return Ok(det);
+        }
+
+        if !self.is_squared() {
+            return Err("No se puede calcular el determinante de una matríz no cuadrada");
         }
 
         let rows = self.shape.0;
@@ -37,7 +45,7 @@ impl Matrix {
         let mut array = self.array.clone();
 
         if rows == 1 {
-            return self.array[0][0]
+            return Ok(self.array[0][0]);
         }
 
         for i in 0..rows {
@@ -52,9 +60,10 @@ impl Matrix {
                     }
                 }
 
-                if array[i][i] == 0.0 {
-                    return 0.0
+                if (array[i][i] - 0.0).abs() < 1e-10 {
+                    return Ok(0.0);
                 }
+
                 pivot = array[i][i];
             }
 
@@ -68,17 +77,17 @@ impl Matrix {
             det *= pivot;
         }
 
-        if det < self.epsilom {
-            det = 0.0;
+        if (det - 0.0).abs() < 1e-10 {
+            return Ok(0.0);
         }
 
         self.det = Some(det);
-        return self.det.unwrap()
+        Ok(det)
     }
 
     pub fn rank(&mut self) -> usize {
         if let Some(rank) = self.rank {
-            return rank
+            return rank;
         }
 
         let (rows, cols) = self.shape;
@@ -91,14 +100,14 @@ impl Matrix {
         for size in (1..=max_dim).rev() {
             println!(" Tamaño de la submatriz actual: {}\n", size);
 
-            /* Bucles que recorren rows y cols de la matriz en busca de una submatríz*/
+            /* Bucles que recorren rows y cols de la matriz en busca de una submatríz */
             /*    Se usa el rango maximo de rows-size para evitar desbordamiento     */
 
             for row in 0..=rows - size {
                 for col in 0..=cols - size {
                     println!(" Posición de inicio de la submatriz: ({}, {})", row, col);
 
-                    /*    Se crea una submatríz cuadrada de mayor orden posible   */
+                    /*  Se crea una submatríz cuadrada de mayor orden posible   */
 
                     let mut submatrix = self.submatrix(row, col, size);
 
@@ -107,10 +116,10 @@ impl Matrix {
 
                     /*  Se comprueba que el determinante de la submatríz sea != 0 */
 
-                    if submatrix.det() != 0.0 {
+                    if submatrix.det() != Ok(0.0) {
                         println!(" [-] Determinante != 0 encontrado...");
                         self.rank = Some(size);
-                        return size
+                        return size;
                     }
 
                     /*          Si el det es != 0 se retorna el tamaño (size)         */
@@ -122,30 +131,26 @@ impl Matrix {
         }
 
         self.rank = Some(0);
-        return 0
+        0
     }
 
     /* Función submatrix*/
     /* Recibe las coordenadas de fila y columna de inicio y el tamaño de la nueva matríz */
+    /* Se crea una matriz de tamaño sizeXsize llena de 0 */
 
     fn submatrix(&self, row: usize, col: usize, size: usize) -> Matrix {
-
-        /* Se crea una matriz de tamaño sizeXsize llena de 0 */
-
         let mut array = vec![vec![0.0; size]; size];
 
         /* Se itera en rango de las dimenciones establecidas */
+        /* La nueva matríz estará formada por los elementos de la matríz og     */
+        /* pero con los elementos de las posiciones establecidas por los parametros */
 
         for i in 0..size {
             for j in 0..size {
-
-                /* La nueva matríz estará formada por los elementos de la matríz og         */
-                /* pero con los elementos de las posiciones establecidas por los parametros */
-
                 array[i][j] = self.array[row + i][col + j];
             }
         }
 
-        return Matrix::new(array)
+        Matrix::new(array)
     }
 }
