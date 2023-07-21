@@ -1,4 +1,3 @@
-
 use std::process::Command;
 
 pub fn show_array(array: &Vec<Vec<f64>>) {
@@ -20,4 +19,3 @@ pub fn clear_term() {
         let _ = Command::new("clear").status();
     }
 }
-

@@ -23,6 +23,8 @@ impl Matrix {
         utils::show_array(&self.array);
     }
 
+    //
+
     pub fn is_squared(&self) -> bool {
         match (self.shape.0, self.shape.1) {
             (rows, cols) if rows == cols => true,
