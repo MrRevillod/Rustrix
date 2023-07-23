@@ -1,10 +1,13 @@
-mod lib {
+mod matrix {
     pub mod matrix;
+}
+
+mod utils {
     pub mod utils;
 }
 
-use lib::matrix::Matrix;
-use lib::utils;
+use crate::utils::utils::clear_term;
+use matrix::matrix::Matrix;
 
 fn get_matrix() -> Matrix {
     /* Inserta aquí la matriz */
@@ -35,7 +38,7 @@ fn get_rank(matrix: &mut Matrix) {
 }
 
 fn main() {
-    utils::clear_term();
+    clear_term();
     let mut x = get_matrix();
 
     get_det(&mut x);
