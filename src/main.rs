@@ -1,13 +1,8 @@
-mod matrix {
-    pub mod matrix;
-}
+pub mod matrix;
+pub mod utils;
 
-mod utils {
-    pub mod utils;
-}
-
-use crate::utils::utils::clear_term;
-use matrix::matrix::Matrix;
+use matrix::Matrix;
+use utils::clear_term;
 
 fn get_matrix() -> Matrix {
     /* Inserta aquí la matriz */

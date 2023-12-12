@@ -1,4 +1,5 @@
-use crate::utils::utils;
+use crate::utils;
+use utils::show_array;
 
 pub struct Matrix {
     array: Vec<Vec<f64>>,
@@ -20,7 +21,7 @@ impl Matrix {
     }
 
     pub fn show(&self) {
-        utils::show_array(&self.array);
+        show_array(&self.array);
     }
 
     pub fn is_squared(&self) -> bool {
